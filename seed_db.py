@@ -7,10 +7,24 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
 from hebergement.models import Gestionnaire, Batiment, Palier, Chambre, Etudiant, Occupation, AnneeAcademique
+from django.contrib.auth.models import User
 
 def seed_data():
     print("Seeding database...")
-    
+
+    # 0. Créer un superutilisateur Django pour la connexion
+    if not User.objects.filter(username='admin').exists():
+        admin_user = User.objects.create_superuser(
+            username='admin',
+            email='admin@inphb.ci',
+            password='admin123',
+            first_name='Admin',
+            last_name='INP-HB'
+        )
+        print(f"Superutilisateur créé: {admin_user.username}")
+    else:
+        print("Superutilisateur 'admin' existe déjà")
+
     # 1. Annee Academique
     annee, _ = AnneeAcademique.objects.get_or_create(
         id_annee='2024-2025',
